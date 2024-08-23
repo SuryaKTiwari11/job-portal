@@ -44,18 +44,15 @@ export const login = async (req, res) => {
         success: false,
       });
     }
-
     const personal = await User.findOne({ email });
-
     if (!personal) {
       return res.status(400).json({
         message: "Incorrect email or password",
         success: false,
       });
     }
-
-    console.log("Password from request:", password);
-    console.log("Password from database:", personal.password);
+    //  console.log("Password from request:", password);
+    // console.log("Password from database:", personal.password);
     if (!password || !personal.password) {
       return res.status(400).json({
         message: "Password is missing",
@@ -69,8 +66,10 @@ export const login = async (req, res) => {
         success: false,
       });
     }
-    console.log(typeof password); // should be 'string'
-    console.log(typeof personal.password); // should be 'string'
+    //    console.log(typeof password); //
+    //   console.log(typeof personal.password); //
+    //  should receive an output saying that this is string
+    //  rather than undefined
 
     // convert to the same case before comparing
     if (role.toLowerCase() !== personal.role.toLowerCase()) {
@@ -127,6 +126,10 @@ export const logout = async (req, res) => {
     );
   } catch (error) {
     console.log(error);
+    return status(400).json({
+      message: "logout failed",
+      success: false,
+    });
   }
 };
 export const updateProfile = async (req, res) => {
@@ -165,7 +168,7 @@ export const updateProfile = async (req, res) => {
 
     //resume comes later here...
     await user.save();
-    user = {
+    userData = {
       _id: user._id,
       fullname: user.fullname,
       email: user.email,
@@ -175,8 +178,13 @@ export const updateProfile = async (req, res) => {
     };
     return res.status(200).json({
       message: "profile updated successfully",
+      user: userData,
+      success: true,
     });
   } catch (error) {
-    console.log(error);
+    return res.status(400).json({
+      message: "profile not updated successfully",
+      success: false,
+    });
   }
 };

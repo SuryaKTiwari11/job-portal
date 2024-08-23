@@ -50,10 +50,8 @@ export const postJob = async (req, res) => {
       job,
     });
   } catch (error) {
-
-
     return res.status(400).json({
-      message: "behenchodh",
+      message: "job wasn't created properly ",
     });
   }
 };
@@ -66,7 +64,13 @@ export const getAllJobs = async (req, res) => {
         { description: { $regex: keywords, $options: "i" } },
       ],
     };
-    const jobs = await Job.find(query);
+    const jobs = await Job.find(query)
+      .populate({
+        path: "company",
+      })
+      .sort({
+        createdAt: -1,
+      });
     if (!jobs) {
       return res.status(404).json({
         message: "Job not found",
@@ -79,6 +83,10 @@ export const getAllJobs = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(404).json({
+      message: "Job not found",
+      success: false,
+    });
   }
 };
 
@@ -95,6 +103,10 @@ export const getJobById = async (req, res) => {
     return res.status(200).json({ job, success: true });
   } catch (error) {
     console.log(error);
+    return res.status(404).json({
+      message: "Job not found",
+      success: false,
+    });
   }
 };
 
@@ -114,5 +126,9 @@ export const getAdminJobs = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(404).json({
+      message: "Job not found",
+      success: false,
+    });
   }
 };

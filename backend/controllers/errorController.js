@@ -6,4 +6,4 @@ export default (err, req, res, next) => {
     message: err.message,
     status: err.status,
   });
-};
+}
