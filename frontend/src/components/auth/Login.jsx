@@ -1,9 +1,15 @@
 import Navbar from "../shared/Navbar";
 import { RadioGroup } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { USER_API_END_POINT } from "../../utlis/constant";
+import axios from "axios";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../redux/authSlice";
+import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
 function Login() {
   const [input, setInput] = useState({
@@ -11,21 +17,43 @@ function Login() {
     password: "",
     role: "",
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((store) => store.auth);
   const changeEventHandler = (e) => {
     setInput({
       ...input,
       [e.target.name]: e.target.value,
     });
   };
-  const changeFileHandler = (e) => {
-    setInput({
-      ...input,
-      file: e.target.files?.[0],
-    });
-  };
+  //   const changeFileHandler = (e) => {
+  //     setInput({
+  //       ...input,
+  //       file: e.target.files?.[0],
+  //     });
+  //   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(input);
+
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
   return (
     <div>
@@ -78,7 +106,7 @@ function Login() {
                 />
                 <Label
                   htmlFor="r1"
-                  className="text-sm font-medium text-gray-700 text-lg"
+                  className="text-sm font-medium text-gray-700"
                 >
                   Student
                 </Label>
@@ -94,19 +122,26 @@ function Login() {
                 />
                 <Label
                   htmlFor="r2"
-                  className="text-sm font-medium text-gray-700 text-lg"
+                  className="text-sm font-medium text-gray-700"
                 >
                   Recruiter
                 </Label>
               </div>
             </RadioGroup>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Login
-          </button>
+          {loading ? (
+            <Button className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              please Wait
+            </Button>
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Login
+            </button>
+          )}
 
           <span className="block text-sm text-gray-500 mt-4 ">
             Dont have an account?{" "}

@@ -1,4 +1,4 @@
-import { populate } from "dotenv";
+// import { populate } from "dotenv";
 import { Application } from "../models/application.model.js";
 import { Job } from "../models/job.model.js";
 
@@ -61,14 +61,14 @@ export const getAppliedJobs = async (req, res) => {
       })
       .populate({
         path: "job",
-        option: { sort: { createdAt: -1 } },
+        options: { sort: { createdAt: -1 } },
         populate: {
           path: "company",
-          option: { sort: { createdAt: -1 } },
+          options: { sort: { createdAt: -1 } },
         },
       });
 
-    if (!application) {
+    if (application.length === 0) {
       return res.status(404).json({
         message: "application wasn't found",
         success: false,
@@ -94,10 +94,10 @@ export const getApplicants = async (req, res) => {
     const jobId = req.params.id;
     const job = await Job.findById(jobId).populate({
       path: "application",
-      option: { sort: { createdAt: -1 } },
+      options: { sort: { createdAt: -1 } },
       populate: {
         path: "applicant",
-        option: { sort: { createdAt: -1 } },
+        options: { sort: { createdAt: -1 } },
       },
     });
     if (!job)
@@ -126,7 +126,7 @@ export const updateStatus = async (req, res) => {
     if (!status) {
       return res.status(400).json({
         message: "status is required",
-        success: "false",
+        success: false,
       });
     }
     // finding the application with

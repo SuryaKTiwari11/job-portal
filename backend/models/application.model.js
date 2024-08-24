@@ -1,4 +1,4 @@
-import { application } from "express";
+// import { application } from "express";
 import mongoose from "mongoose";
 
 const applicationSchema = new mongoose.Schema(
@@ -14,11 +14,11 @@ const applicationSchema = new mongoose.Schema(
       required: true,
     },
     status: {
-      type: string,
+      type: String,
       enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
   },
   { timestamps: true }
 );
-export const application = mongoose.model("Application", applicationSchema);
+export const Application = mongoose.model("Application", applicationSchema);
