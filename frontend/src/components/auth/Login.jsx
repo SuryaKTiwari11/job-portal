@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/authSlice";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import Footer from "../Footer";
 
 function Login() {
   const [input, setInput] = useState({
@@ -56,6 +57,7 @@ function Login() {
     }
   };
   return (
+    <>
     <div>
       <Navbar />
       <div className="flex items-center align-middle justify-center max-w-7xl mx-auto ">
@@ -152,6 +154,8 @@ function Login() {
         </form>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 
